@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <link rel="stylesheet" type="text/css" href="../css/style.css">
+    <link rel="stylesheet" type="text/css" href="../css/cad_passagem.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Viagem</title>
+</head>
+
+<body>
+
+    <header id="cabecalho"></header>
+
+    <div class="container" id="form_pass">
+        <section id="form_section">
+            <form onsubmit="criarViagem(event)">
+                <h3>Cadastro de Viagem</h3>
+                <p>Preencha os campos com os dados referentes ao voo que <br> deseja cadastrar</p>
+                <div class="input_form">
+                    <label for="numero_aviao">Numero do voo</label>
+                    <input type="text" name="numero_aviao">
+                </div>
+                <div class="input_form">
+                    <label for="local_embarque">Local de embarque</label>
+                    <input type="text" name="local_embarque">
+                </div>
+                <div class="input_form">
+                    <label for="local_desembarque">Local de desembarque</label>
+                    <input type="text" name="local_desembarque">
+                </div>
+                <div class="input_form">
+                    <label for="data_partida">Data partida</label>
+                    <input type="text" placeholder="aaaa-mm-dd" name="data_partida" class="data">
+                </div>
+                <div class="input_form">
+                    <label for="data_chegada">Data chegada</label>
+                    <input type="text" placeholder="aaaa-mm-dd" name="data_chegada" class="data">
+                </div>
+                <div class="input_form">
+                    <label for="hora_partida">Hora partida</label>
+                    <input type="text" placeholder="hh:mm:ss" name="hora_partida" class="hora">
+                </div>
+                <div class="input_form">
+                    <label for="hora_chegada">Hora chegada</label>
+                    <input type="text" placeholder="hh:mm:ss" name="hora_chegada" class="hora">
+                </div>
+                <div class="input_form">
+                    <label for="empresa_aerea">Empresa aérea</label>
+                    <input type="text" name="empresa_aerea">
+                </div>
+                <div class="input_form">
+                    <label for="valor">Valor da Passagem</label>
+                    <input type="text" name="valor" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                </div>
+                <button type="submit" id="btn_submit">Cadastrar</button>
+
+            </form>
+        </section>
+
+
+    </div>
+    <script src="/src/client/js/menu.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.3.js"></script>
+    <script src="/src/client/js/masks.js"></script>
+    <script>
+        async function criarViagem(e) {
+            //e.preventDefault();
+            try {
+                const response = await fetch('http://localhost:8000/viagemAviao', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        numero_aviao: e.target.numero_aviao.value,
+                        local_embarque: e.target.local_embarque.value,
+                        local_desembarque: e.target.local_desembarque.value,
+                        data_partida: e.target.data_partida.value,
+                        data_chegada: e.target.data_chegada.value,
+                        hora_partida: e.target.hora_partida.value,
+                        hora_chegada: e.target.hora_chegada.value,
+                        empresa_aerea: e.target.empresa_aerea.value,
+                        valor: e.target.valor.value
+                    })
+                });
+                const dados = await response.json();
+                console.log(dados);
+            } catch (erro) {
+                console.log(erro);
+            }
+        }
+    </script>
+
+</body>
+
+</html>

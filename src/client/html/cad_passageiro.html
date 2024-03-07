@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <link rel="stylesheet" type="text/css" href="../css/style.css">
+    <link rel="stylesheet" type="text/css" href="../css/cad_passageiro.css">
+    <title>Compra de passagem</title>
+</head>
+
+<body>
+
+    <header id="cabecalho"></header>
+    <section id="page-container">
+        <div>
+            <section>
+                <div id="displayViagens" style="display: flex; margin-top: 60px; justify-content: center;"></div>
+            </section>
+
+            <section id="main-container">
+                <div>
+                    <div>
+                        <label for="passageirosSelect">Selecione o Passageiro:</label>
+                        <select name="passageirosSelect" id="passageirosSelect">
+                            <option value="" disabled selected >Selecione uma opção</option>
+                        </select>
+                        <button class="atualizar" onclick="getPassageiros()">Atualizar</button>
+                    </div>
+                    <button id="addPassageiro" onclick="exibirFormPassageiro()">Novo Passageiro</button>
+                </div>
+
+                <div class="container" id="form_pass">
+                    <section id="form_section"></section>
+                </div>
+
+                <div>
+                    <label for="assentoSelect">Selecione o assento</label>
+                    <select name="assentoSelect" id="assentoSelect" onchange="console.log(assentoSelect.value)"></select>
+                </div>
+
+                <div>
+                    <h5>Dados do cartão</h5>
+                    <div style="display: flex;justify-content: space-between; margin-top: 10px;">
+                        <label for="numerocartao">Número do cartão</label>
+                        <input type="text" name="numerocartao" id="numCartao">
+                    </div>
+                    <div style="display: flex;justify-content: space-between; margin-top: 10px;">
+                        <label for="vencimento">Vencimento</label>
+                        <input type="text" name="vencimento" id="dataCurta">
+                    </div>
+                    <div style="display: flex;justify-content: space-between; margin-top: 10px;">
+                        <label for="cvv">CVV</label>
+                        <input type="text" name="cvv" maxlength="3">
+                    </div>
+                    <div style="display: flex;justify-content: space-between; margin-top: 10px;">
+                        <label for="nometitular">Nome do titular</label>
+                        <input type="text" name="nometitular" id="">
+                    </div>
+
+                </div>
+
+                <button class="confirmar" onclick="postPassagem()">Confirmar</button>
+            </section>
+        </div>
+    </section>
+
+
+    <script src="/src/client/js/menu.js"></script>
+
+
+
+
+    <script>
+        window.onload = getViagens(), getAssentos(), getPassageiros();
+
+
+        async function getViagens() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const idViagem = urlParams.get('id');
+
+                let dadoBruto = await fetch('http://localhost:8000/')
+                let dados = await dadoBruto.json()
+                let display = ''
+                const viagem = dados.find(element => element.id == idViagem);
+                console.log(viagem)
+                if (viagem) {
+                    display += `
+                        <div class="card">
+                            <div class="card-body">
+                            <div class="card-title-box">
+                                <h5 style="text-align: right;">${viagem.local_embarque}</h5>
+                                <hr class="card-title-line">
+                                <h5>${viagem.local_desembarque}</h5>
+                            </div>
+                            <div class="card-time-box">
+                                <h6>${viagem.data_partida}</h6>
+                                <hr class="card-title-line">
+                                <h6>${viagem.data_chegada}</h6>
+                            </div>
+                            <div class="card-time-box">
+                                <h6>${viagem.hora_partida}</h6>
+                                <hr class="card-title-line">
+                                <h6>${viagem.hora_chegada}</h6>
+                            </div>
+                            <div class="card-price-box">
+                                <p>${viagem.numero_aviao}</p>
+                                <div style="display: flex;">
+                                <p>R$</p>
+                                <h2>${viagem.valor}</h2> 
+                                </div>
+                            </div>
+                            <div class="card-last-box">
+                                <h4>${viagem.empresa_aerea}</h4>
+                            
+                            </div>
+                            </div>
+                        </div>`
+                }
+                document.getElementById('displayViagens').innerHTML = display
+            } catch (erro) {
+                console.log(erro)
+            }
+        }
+
+        async function getAssentos() {
+            try {
+                let dadoBruto = await fetch('http://localhost:8000/passagemget')
+                let dados = await dadoBruto.json()
+
+                //console.log(dados)
+                const assentoSelect = document.getElementById('assentoSelect')
+                assentoSelect.innerHTML = '<option value="" disabled selected>Selecione uma opção</option>';
+
+                const todosAssentos = Array.from({
+                    length: 20
+                }, (_, i) => i + 1);
+                const assentosOcupados = dados.map((passageiro) => passageiro.assento);
+                const assentosDisponiveis = todosAssentos.filter((assento) => !assentosOcupados.includes(assento));
+
+
+                assentosDisponiveis.forEach((assento) => {
+                    const option = document.createElement('option');
+                    option.value = assento;
+                    option.textContent = assento;
+                    assentoSelect.appendChild(option);
+                });
+
+            } catch (erro) {
+                return console.log("Erro ao pegar assentos" + erro)
+            }
+        }
+
+        async function postPassagem() {
+            //e.preventDefault();
+            try {
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const idViagem = urlParams.get('id');
+                const response = await fetch('http://localhost:8000/passagempost', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        passageiroId: passageirosSelect.value,
+                        assento: assentoSelect.value,
+                        viagemId: idViagem
+                    }),
+
+                });
+                const dados = await response.json();
+                console.log(dados);
+                window.location.href = "/src/client/html/avaliacao.html";
+            } catch (erro) {
+                console.log(erro);
+            }
+        }
+
+        async function getPassageiros() {
+            try {
+                let dadoBruto = await fetch('http://localhost:8000/passageiroget')
+                let dados = await dadoBruto.json()
+
+                const userid = sessionStorage.getItem('usuarioLogado')
+                    //console.log(userid)
+                const passageiros = []
+
+
+                const passageiroSelect = document.getElementById('passageirosSelect')
+
+                if (userid) {
+                    const passageiros = await dados.filter(element => element.idUsuario == userid)
+                        //console.log(passageiros)
+                    passageiroSelect.innerHTML = '<option value="" disabled selected>Selecione uma opção</option>';
+                    passageiros.forEach((passageiro) => {
+                        const option = document.createElement('option');
+                        option.value = passageiro.id;
+                        option.textContent = passageiro.nome;
+                        passageiroSelect.appendChild(option);
+                    });
+                }
+            } catch (erro) {
+                return console.log("Erro ao pegar passageiros" + erro)
+            }
+        }
+
+        async function postPassageiro(e) {
+            e.preventDefault();
+            try {
+                const sessionUserid = sessionStorage.getItem('usuarioLogado')
+                console.log(sessionUserid)
+                const response = await fetch('http://localhost:8000/passageiro', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        nome: e.target.nome.value,
+                        sobrenome: e.target.sobrenome.value,
+                        email: e.target.email.value,
+                        cpf: e.target.cpf.value,
+                        rg: e.target.rg.value,
+                        data_nascimento: e.target.data_nascimento.value,
+                        telefone: e.target.telefone.value,
+                        idUsuario: sessionUserid
+                    }),
+
+                });
+                const dados = await response.json();
+                console.log(dados)
+            } catch (erro) {
+                console.log(erro);
+            }
+        }
+
+        async function exibirFormPassageiro() {
+            let displayForm = ''
+            displayForm = `
+                <form onsubmit="postPassageiro(event)" class="teste">
+                    <h3>Dados do passageiro</h3>
+                    <div class="input_form">
+                        <label for="nome">Nome</label>
+                        <input type="text" name="nome">
+                    </div>
+                    <div class="input_form">
+                        <label for="sobrenome">Sobrenome</label>
+                        <input type="text" name="sobrenome">
+                    </div>
+                    <div class="input_form">
+                        <label for="email">Email</label>
+                        <input type="text" name="email">
+                    </div>
+                    <div class="input_form">
+                        <label for="cpf">CPF</label>
+                        <input type="text" name="cpf" id="cpf">
+                    </div>
+                    <div class="input_form">
+                        <label for="rg">RG</label>
+                        <input type="text" name="rg" class="rg">
+                    </div>
+                    <div class="input_form">
+                        <label for="data_nascimento">Data de nascimento</label>
+                        <input type="datetime" name="data_nascimento" class="data">
+                    </div>
+                    <div class="input_form">
+                        <label for="telefone">Telefone</label>
+                        <input type="text" name="telefone" class="masc-celular">
+                    </div>
+                    <button type="submit" id="btn_submit">Confirmar</button>
+                </form>
+            `
+            document.getElementById('form_section').innerHTML = displayForm
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.3.js"></script>
+    <script src="/src/client/js/masks.js"></script>
+</body>
+
+</html>

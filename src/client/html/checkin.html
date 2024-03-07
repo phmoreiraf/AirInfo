@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>CheckIn</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <link rel="stylesheet" href="../css/styleCheckin.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+    <body onload="init()" class="vsc-initialized">
+
+        <header id="cabecalho"></header>
+
+        <div class="container" id="form_pass">
+            <section id="form_section">
+                <form id="form-checkin" onsubmit="CheckIn(event)">
+                    <h3>Check-In</h3>
+                    <p>Preencha os dados abaixo para localizarmos a sua passagem</p>
+                    <div class="input_form">
+                        <label for="local_embarque">CPF do Passageiro</label>
+                        <input type="text" name="cpf">
+                    </div>
+                    <div class="input_form">
+                        <label for="local_desembarque">Nome do Passageiro</label>
+                        <input type="text" name="nome">
+                    </div>
+                    <div class="input_form">
+                        <label for="data_partida">Sobrenome do Passageiro</label>
+                        <input type="text" name="sobrenome">
+                    </div>
+                    <div class="input_form">
+                        <label for="data_chegada">ID da Passagem</label>
+                        <input type="text" name="id_passagem">
+                    </div>
+
+                    <button type="submit" id="btn_submit">Realizar Check-In</button>
+                    <input type="reset" class="btn btn-secondary" id="btn_clear" value="Limpar">
+                </form>
+            </section>
+        </div>
+
+
+        <script src="/src/client/js/menu.js"></script>
+        <script>
+            async function CheckIn(e) {
+                //e.preventDefault();
+                //console.log(e.target.localizador.value)
+                console.log(e.target.cpf.value)
+                console.log(e.target.nome.value)
+                console.log(e.target.sobrenome.value)
+                console.log(e.target.id_passagem.value)
+                    //console.log(e.target.CheckRealizado.value)
+                try {
+                    const response = await fetch('http://localhost:8000/checkin', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            cpf: e.target.cpf.value,
+                            nome: e.target.nome.value,
+                            sobrenome: e.target.sobrenome.value,
+                            id_passagem: e.target.id_passagem.value,
+                        })
+                    });
+                    const dados = await response.json();
+                    console.log(dados);
+                } catch (erro) {
+                    console.log(erro);
+                }
+            }
+        </script>
+        <script>
+            //query com select para listar os dados do voo se o check in estiver feito, condicao quando o CheckRealizado for SIM
+            //Colocar em outras pagina
+        </script>
+
+        <script src="https://code.jquery.com/jquery-3.6.3.js"></script>
+        <script src="/src/client/js/masks.js"></script>
+    </body>
+
+</html>

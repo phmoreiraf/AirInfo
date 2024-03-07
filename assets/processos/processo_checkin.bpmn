@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_0o87biy" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="387489b" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.0.0" camunda:diagramRelationId="dce21805-ae07-472f-bd94-201946569620">
+  <bpmn:collaboration id="Collaboration_1trvlnk">
+    <bpmn:participant id="Participant_056nh3b" name="Check-In" processRef="template-absence-request" />
+  </bpmn:collaboration>
+  <bpmn:process id="template-absence-request" name="Quick Start - Absence Request" isExecutable="true">
+    <bpmn:extensionElements>
+      <zeebe:userTaskForm id="userTaskForm_0oc50o5">{
+  "components": [
+    {
+      "text": "&lt;img src=\"https://camunda.com/wp-content/uploads/2020/05/logo-camunda-black.svg\"&gt;\n&lt;h2&gt; Request Time Off&lt;/h2&gt;\n&lt;p&gt;According to our company policy any planned absence has to be confirmed by your line manager.&lt;/p&gt;&lt;p&gt;Please, fill out the following fields properly. After requesting your absence you will be informed via email.&lt;/p&gt;",
+      "type": "text",
+      "id": "Field_0mwb5rz",
+      "properties": {}
+    },
+    {
+      "label": "Employee",
+      "type": "textfield",
+      "id": "Field_1jjihhj",
+      "key": "employeeName",
+      "description": "Enter your name (Surname, Firstname)",
+      "validate": {
+        "required": true
+      },
+      "properties": {}
+    },
+    {
+      "values": [
+        {
+          "value": "sales",
+          "label": "Sales"
+        },
+        {
+          "label": "Marketing",
+          "value": "marketing"
+        },
+        {
+          "label": "Finance",
+          "value": "finance"
+        },
+        {
+          "label": "IT",
+          "value": "it"
+        }
+      ],
+      "label": "Department",
+      "type": "select",
+      "id": "Field_1cc89p4",
+      "key": "department",
+      "description": "Select your department",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Flexible Time Off",
+          "value": "fto"
+        },
+        {
+          "label": "Sickness",
+          "value": "sickness"
+        },
+        {
+          "label": "Parental Leave",
+          "value": "parentalLeave"
+        },
+        {
+          "label": "Business Travel",
+          "value": "businessTravel"
+        }
+      ],
+      "label": "Policy",
+      "type": "select",
+      "id": "Field_01b1ql9",
+      "key": "policy",
+      "description": "Select a policy",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "From",
+      "type": "textfield",
+      "id": "Field_09evuq4",
+      "key": "requestedFrom",
+      "validate": {
+        "required": true,
+        "pattern": "\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])"
+      },
+      "description": "From (YYYY-MM-DD)"
+    },
+    {
+      "label": "To",
+      "type": "textfield",
+      "id": "Field_136uyvl",
+      "key": "requestedTo",
+      "validate": {
+        "required": true,
+        "pattern": "\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])"
+      },
+      "description": "To (YYYY-MM-DD)"
+    },
+    {
+      "label": "Comment",
+      "type": "textfield",
+      "id": "Field_05k239m",
+      "key": "comment",
+      "description": "Additional comments"
+    }
+  ],
+  "schemaVersion": 4,
+  "exporter": {
+    "name": "Camunda Web Modeler",
+    "version": "24b59bc"
+  },
+  "type": "default",
+  "id": "requestAbsence",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "1.3"
+}</zeebe:userTaskForm>
+      <zeebe:userTaskForm id="userTaskForm_37oc82a">{
+  "components": [
+    {
+      "text": "# Approve Absence Request",
+      "type": "text",
+      "id": "Field_1ojn9js"
+    },
+    {
+      "label": "Employee",
+      "type": "textfield",
+      "id": "Field_03xg47q",
+      "key": "employeeName",
+      "description": "Absence requested by",
+      "disabled": true
+    },
+    {
+      "label": "From",
+      "type": "textfield",
+      "id": "Field_1th67se",
+      "key": "requestedFrom",
+      "disabled": true
+    },
+    {
+      "label": "To",
+      "type": "textfield",
+      "id": "Field_0vwvrv6",
+      "key": "requestedTo",
+      "disabled": true
+    },
+    {
+      "label": "Comments",
+      "type": "textfield",
+      "id": "Field_1vx3kxg",
+      "key": "comment",
+      "description": "Employee's comments",
+      "disabled": true
+    },
+    {
+      "values": [
+        {
+          "label": "Is approved",
+          "value": "approved"
+        },
+        {
+          "label": "Is rejected",
+          "value": "rejected"
+        },
+        {
+          "label": "Needs clarification",
+          "value": "needsClarification"
+        }
+      ],
+      "label": "This request",
+      "type": "radio",
+      "id": "Field_18myzq1",
+      "key": "approvalResult",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "schemaVersion": 4,
+  "exporter": {
+    "name": "Camunda Web Modeler",
+    "version": "24b59bc"
+  },
+  "type": "default",
+  "id": "approveAbsence",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "1.3"
+}</zeebe:userTaskForm>
+      <zeebe:userTaskForm id="userTaskForm_080698f">{
+  "components": [
+    {
+      "text": "# Request Time Off",
+      "type": "text",
+      "id": "Field_13t5jm3"
+    },
+    {
+      "label": "Employee",
+      "type": "textfield",
+      "id": "Field_1jjihhj",
+      "key": "employeeName",
+      "description": "Enter your name (Surname, Firstname)",
+      "validate": {
+        "required": true
+      },
+      "disabled": true
+    },
+    {
+      "values": [
+        {
+          "label": "Flexible Time Off",
+          "value": "fto"
+        },
+        {
+          "label": "Sickness",
+          "value": "sickness"
+        },
+        {
+          "label": "Parental Leave",
+          "value": "parentalLeave"
+        },
+        {
+          "label": "Business Travel",
+          "value": "businessTravel"
+        }
+      ],
+      "label": "Policy",
+      "type": "select",
+      "id": "Field_01b1ql9",
+      "key": "policy",
+      "description": "Select a policy",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "From",
+      "type": "textfield",
+      "id": "Field_09evuq4",
+      "key": "requestedFrom",
+      "validate": {
+        "required": true,
+        "regularExpressionPattern": "\\d{4}"
+      },
+      "description": "From (YYYY-MM-DD)",
+      "disabled": false
+    },
+    {
+      "label": "To",
+      "type": "textfield",
+      "id": "Field_136uyvl",
+      "key": "requestedTo",
+      "validate": {
+        "required": true,
+        "regularExpressionPattern": "/^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/"
+      },
+      "description": "To (YYYY-MM-DD)"
+    },
+    {
+      "label": "Comment",
+      "type": "textfield",
+      "id": "Field_05k239m",
+      "key": "comment",
+      "description": "Additional comments",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "schemaVersion": 4,
+  "exporter": {
+    "name": "Camunda Web Modeler",
+    "version": "ed88f15"
+  },
+  "type": "default",
+  "id": "requestAbsence",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "1.3"
+}</zeebe:userTaskForm>
+    </bpmn:extensionElements>
+    <bpmn:laneSet id="LaneSet_08mslvx">
+      <bpmn:lane id="Lane_0jbpf0w" name="Cliente">
+        <bpmn:flowNodeRef>Event_1e96d8c</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1oik46m</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_1lw8d3u</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1n9b9w9</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1p5uq2u</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:sequenceFlow id="Flow_0t1u886" sourceRef="StartEvent_1" targetRef="Activity_1n9b9w9" />
+    <bpmn:sequenceFlow id="Flow_10lj672" sourceRef="Activity_1n9b9w9" targetRef="Activity_1p5uq2u" />
+    <bpmn:sequenceFlow id="Flow_0jdyouw" sourceRef="Activity_1p5uq2u" targetRef="Gateway_1lw8d3u" />
+    <bpmn:sequenceFlow id="Flow_0iyv5od" name="Não" sourceRef="Gateway_1lw8d3u" targetRef="Activity_1n9b9w9" />
+    <bpmn:sequenceFlow id="Flow_0bynxw9" sourceRef="Activity_1oik46m" targetRef="Event_1e96d8c" />
+    <bpmn:sequenceFlow id="Flow_11g1eo5" sourceRef="Gateway_1lw8d3u" targetRef="Activity_1oik46m" />
+    <bpmn:endEvent id="Event_1e96d8c">
+      <bpmn:incoming>Flow_0bynxw9</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Activity_1oik46m" name="Emite as passagens">
+      <bpmn:incoming>Flow_11g1eo5</bpmn:incoming>
+      <bpmn:outgoing>Flow_0bynxw9</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_1lw8d3u" name="Dados estão corretos?">
+      <bpmn:incoming>Flow_0jdyouw</bpmn:incoming>
+      <bpmn:outgoing>Flow_0iyv5od</bpmn:outgoing>
+      <bpmn:outgoing>Flow_11g1eo5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Activity_1n9b9w9" name="Passageiro insere os dados no guichê da companhia aérea">
+      <bpmn:incoming>Flow_0t1u886</bpmn:incoming>
+      <bpmn:incoming>Flow_0iyv5od</bpmn:incoming>
+      <bpmn:outgoing>Flow_10lj672</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Activity_1p5uq2u" name="Verifica os dados">
+      <bpmn:incoming>Flow_10lj672</bpmn:incoming>
+      <bpmn:outgoing>Flow_0jdyouw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0t1u886</bpmn:outgoing>
+    </bpmn:startEvent>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1trvlnk">
+      <bpmndi:BPMNShape id="Participant_056nh3b_di" bpmnElement="Participant_056nh3b" isHorizontal="true">
+        <dc:Bounds x="158" y="80" width="1382" height="510" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0jbpf0w_di" bpmnElement="Lane_0jbpf0w" isHorizontal="true">
+        <dc:Bounds x="188" y="80" width="1352" height="510" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1e96d8c_di" bpmnElement="Event_1e96d8c">
+        <dc:Bounds x="1362" y="352" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0gy4wty_di" bpmnElement="Activity_1oik46m">
+        <dc:Bounds x="1120" y="330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1lw8d3u_di" bpmnElement="Gateway_1lw8d3u" isMarkerVisible="true">
+        <dc:Bounds x="955" y="345" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="883" y="356.5" width="62" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1rra4qm_di" bpmnElement="Activity_1n9b9w9">
+        <dc:Bounds x="380" y="270" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0hq510c_di" bpmnElement="Activity_1p5uq2u">
+        <dc:Bounds x="380" y="410" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="242" y="292" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="226" y="206" width="82" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0t1u886_di" bpmnElement="Flow_0t1u886">
+        <di:waypoint x="278" y="310" />
+        <di:waypoint x="380" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10lj672_di" bpmnElement="Flow_10lj672">
+        <di:waypoint x="430" y="350" />
+        <di:waypoint x="430" y="410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jdyouw_di" bpmnElement="Flow_0jdyouw">
+        <di:waypoint x="480" y="450" />
+        <di:waypoint x="980" y="450" />
+        <di:waypoint x="980" y="395" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0iyv5od_di" bpmnElement="Flow_0iyv5od">
+        <di:waypoint x="980" y="345" />
+        <di:waypoint x="980" y="310" />
+        <di:waypoint x="480" y="310" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="936" y="283" width="21" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bynxw9_di" bpmnElement="Flow_0bynxw9">
+        <di:waypoint x="1220" y="370" />
+        <di:waypoint x="1362" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11g1eo5_di" bpmnElement="Flow_11g1eo5">
+        <di:waypoint x="1005" y="370" />
+        <di:waypoint x="1120" y="370" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

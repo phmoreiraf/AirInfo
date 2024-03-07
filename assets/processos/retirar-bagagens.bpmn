@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="387489b" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.1.0" camunda:diagramRelationId="12fdae85-2480-4d5e-af5d-0e039ec8d03c">
+  <bpmn:collaboration id="Collaboration_0f7alji">
+    <bpmn:participant id="Participant_06uierh" name="retirar bagagens" processRef="Process_351d90a7-ee81-43a9-8011-ca536b75e775" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_351d90a7-ee81-43a9-8011-ca536b75e775" isExecutable="true">
+    <bpmn:startEvent id="Event_13ffyz4">
+      <bpmn:outgoing>Flow_0ivbicp</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0ivbicp" sourceRef="Event_13ffyz4" targetRef="Activity_1p7xxq8" />
+    <bpmn:sequenceFlow id="Flow_0939s5a" sourceRef="Activity_1p7xxq8" targetRef="Activity_1qypzr8" />
+    <bpmn:sequenceFlow id="Flow_0tmh644" sourceRef="Activity_1qypzr8" targetRef="Activity_05t2des" />
+    <bpmn:sequenceFlow id="Flow_1m2z136" sourceRef="Activity_05t2des" targetRef="Activity_0up7i7q" />
+    <bpmn:userTask id="Activity_0up7i7q" name="a bagagem é retirada">
+      <bpmn:incoming>Flow_1m2z136</bpmn:incoming>
+      <bpmn:outgoing>Flow_1jpupg2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:manualTask id="Activity_1p7xxq8" name="o voo final do cliente é realizado">
+      <bpmn:incoming>Flow_0ivbicp</bpmn:incoming>
+      <bpmn:outgoing>Flow_0939s5a</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:manualTask id="Activity_1qypzr8" name="as bagagens sao encaminhadas para a esteira">
+      <bpmn:incoming>Flow_0939s5a</bpmn:incoming>
+      <bpmn:outgoing>Flow_0tmh644</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:manualTask id="Activity_05t2des" name="a esteira para retirar a bagagem é informada">
+      <bpmn:incoming>Flow_0tmh644</bpmn:incoming>
+      <bpmn:outgoing>Flow_1m2z136</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:sequenceFlow id="Flow_1jpupg2" sourceRef="Activity_0up7i7q" targetRef="Activity_03uj1ba" />
+    <bpmn:endEvent id="Event_14uewcb">
+      <bpmn:incoming>Flow_0ljyi3k</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0ljyi3k" sourceRef="Activity_03uj1ba" targetRef="Event_14uewcb" />
+    <bpmn:serviceTask id="Activity_03uj1ba" name="a situaçao da bagagem e atualizada na aplicacao">
+      <bpmn:incoming>Flow_1jpupg2</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ljyi3k</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0f7alji">
+      <bpmndi:BPMNShape id="Participant_06uierh_di" bpmnElement="Participant_06uierh" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="1098" height="150" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_13ffyz4_di" bpmnElement="Event_13ffyz4">
+        <dc:Bounds x="232" y="122" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_07rf1s7_di" bpmnElement="Activity_0up7i7q">
+        <dc:Bounds x="800" y="100" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1nvuj4r_di" bpmnElement="Activity_1p7xxq8">
+        <dc:Bounds x="320" y="100" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_13aued5_di" bpmnElement="Activity_1qypzr8">
+        <dc:Bounds x="480" y="100" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1okec43_di" bpmnElement="Activity_05t2des">
+        <dc:Bounds x="640" y="100" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_14uewcb_di" bpmnElement="Event_14uewcb">
+        <dc:Bounds x="1122" y="122" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19nd4b5_di" bpmnElement="Activity_03uj1ba">
+        <dc:Bounds x="960" y="100" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0ivbicp_di" bpmnElement="Flow_0ivbicp">
+        <di:waypoint x="268" y="140" />
+        <di:waypoint x="320" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0939s5a_di" bpmnElement="Flow_0939s5a">
+        <di:waypoint x="420" y="140" />
+        <di:waypoint x="480" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0tmh644_di" bpmnElement="Flow_0tmh644">
+        <di:waypoint x="580" y="140" />
+        <di:waypoint x="640" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1m2z136_di" bpmnElement="Flow_1m2z136">
+        <di:waypoint x="740" y="140" />
+        <di:waypoint x="800" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1jpupg2_di" bpmnElement="Flow_1jpupg2">
+        <di:waypoint x="900" y="140" />
+        <di:waypoint x="960" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ljyi3k_di" bpmnElement="Flow_0ljyi3k">
+        <di:waypoint x="1060" y="140" />
+        <di:waypoint x="1122" y="140" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

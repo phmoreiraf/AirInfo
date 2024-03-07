@@ -1,0 +1,29 @@
+cff-version: 1.0.1
+message: Please cite this software using these metadata.
+title: AirInfo
+authors:
+  - family-names: Nicesio Campos
+    given-names: Daniel
+  - family-names: Hemétrio Teixeira
+    given-names: Lucas
+  - family-names: Flor Vilela
+    given-names: Lucas
+  - family-names: Oliveira Vasconcelos de Faria
+    given-names: Lucca
+  - family-names: Moreira Caixeta Ferreira
+    given-names: Pedro Henrique
+  - name-suffix: Professor
+    affiliation: PUC Minas
+    family-names: Bastos de Paula
+    given-names: Hugo 
+  - name-suffix: Professor
+    affiliation: PUC Minas
+    family-names: Alonso Veloso
+    given-names: Eveline 
+keywords:
+  - Simulação Aeroporto
+  - Processos de Negócios
+repository-code: https://github.com/ICEI-PUC-Minas-PPLES-TI/plf-es-2023-1-ti2-0924100-AirInfo
+license: CC-BY-4.0
+version: 1.0.0
+date-released: 2023-06-26

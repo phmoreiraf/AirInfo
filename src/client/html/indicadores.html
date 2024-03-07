@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <link rel="stylesheet" type="text/css" href="../css/style.css">
+    <title>Indicadores de desempenho</title>
+</head>
+
+<body>
+
+
+    <header id="cabecalho"></header>
+    <div style="color: white; margin: 60px 0 0 60px">
+        <div id="displayocop"></div>
+        <hr></hr>
+        <div id="displaycheck"></div>
+        <hr></hr>
+        <div id="displayNusuarios"></div>
+        <hr></hr>
+        <div id="displayavaliacao"></div>
+        <hr></hr>
+        <div id="displayperBagagem"></div>
+    </div>
+
+
+    <script src="/src/client/js/menu.js"></script>
+    <script>
+        window.onload = getOcupacao(), getcheck()
+
+
+        async function getOcupacao() {
+            try {
+                const dadosBrutos = await fetch(`http://localhost:8000/ocupacao`)
+                const ocop = await dadosBrutos.json()
+                console.log(ocop)
+                let display = ''
+                let ocopPercent = 0
+                let cont = 0
+                ocop.forEach(element => {
+                    ocopPercent += (element.passageiroCount * 100) / 20
+                    cont++
+                });
+                display = `<p>Porcentagem média de ocupação dos voos: ${ ocopPercent / cont }%</p>`
+                document.getElementById('displayocop').innerHTML = display
+            } catch (erro) {
+                console.log(erro)
+            }
+            getNovosUsuarios()
+            getAvaliacaoGeral()
+            getBagagensDesoachadas()
+        }
+        async function getNovosUsuarios() {
+            try {
+                let display = ''
+                const ano = new Date().getFullYear()
+                let dadosBrutos = await fetch(`http://localhost:8000/novosusuarios?dataInicial=${ano}-01-01&dataFinal=${ano}-01-31`)
+                const janeiro = await dadosBrutos.json()
+                display += `<p>Novos usuarios em janeiro: ${janeiro.total}</p>`
+
+                dadosBrutos = await fetch(`http://localhost:8000/novosusuarios?dataInicial=${ano}-02-01&dataFinal=${ano}-02-28`)
+                const fevereiro = await dadosBrutos.json()
+                display += `<p>Novos usuarios em fevereiro: ${fevereiro.total}</p>`
+
+                dadosBrutos = await fetch(`http://localhost:8000/novosusuarios?dataInicial=${ano}-03-01&dataFinal=${ano}-03-31`)
+                const marco = await dadosBrutos.json()
+                display += `<p>Novos usuarios em março: ${marco.total}</p>`
+
+                dadosBrutos = await fetch(`http://localhost:8000/novosusuarios?dataInicial=${ano}-04-01&dataFinal=${ano}-04-30`)
+                const abril = await dadosBrutos.json()
+                display += `<p>Novos usuarios em abril: ${abril.total}</p>`
+
+                dadosBrutos = await fetch(`http://localhost:8000/novosusuarios?dataInicial=${ano}-05-01&dataFinal=${ano}-05-31`)
+                const maio = await dadosBrutos.json()
+                display += `<p>Novos usuarios em maio: ${maio.total}</p>`
+
+
+                dadosBrutos = await fetch(`http://localhost:8000/novosusuarios?dataInicial=${ano}-06-01&dataFinal=${ano}-06-30`)
+                const junho = await dadosBrutos.json()
+                display += `<p>Novos usuarios em junho: ${junho.total}</p>`
+
+                document.getElementById('displayNusuarios').innerHTML = display
+            } catch (erro) {
+                console.log(erro)
+            }
+        }
+        async function getAvaliacaoGeral() {
+            try {
+                let dadosBrutos = await fetch(`http://localhost:8000/avaliacaogeral`)
+                let totalAvaliacaos = await dadosBrutos.json()
+
+                dadosBrutos = await fetch(`http://localhost:8000/avaliacaogeralS`)
+                let somaAvaliacao = await dadosBrutos.json()
+                console.log(totalAvaliacaos)
+                let mediaAvaliacoes = somaAvaliacao.soma / totalAvaliacaos.totalAvaliacao
+                let display = `<p>Media avaliacaos: ${mediaAvaliacoes}</p>`
+
+                document.getElementById('displayavaliacao').innerHTML = display
+            } catch (erro) {
+                console.log(erro)
+            }
+        }
+        async function getBagagensDesoachadas() {
+            try {
+                let dadosBrutos = await fetch(`http://localhost:8000/bagagensT`)
+                let totalBagagens = await dadosBrutos.json()
+
+                dadosBrutos = await fetch(`http://localhost:8000/bagagensdesp`)
+                let bagagensdesp = await dadosBrutos.json()
+
+                let porcentBagagens = (bagagensdesp.retiradas / totalBagagens.totalBagagens) * 100
+                let display = `<p>Porcentagem de bagagens com status como retirada: ${porcentBagagens.toFixed(2)}%</p>`
+
+                document.getElementById('displayperBagagem').innerHTML = display
+            } catch (erro) {
+                console.log(erro)
+            }
+        }
+
+        async function getcheck() {
+            try {
+                const dadosBrutos = await fetch(`http://localhost:8000/check`)
+                const checkB = await dadosBrutos.json()
+                const check = checkB[0][0]
+                let display = `
+                <p>Porcentagem de Check-Ins realizados pelo nosso site: ${(check.totalCheckin * 100) / check.totalPassageiroViagem}%</p>
+                `
+                document.getElementById('displaycheck').innerHTML = display
+
+            } catch (erro) {
+                console.log(erro)
+            }
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.3.js"></script>
+    <script src="/src/client/js/masks.js"></script>
+</body>
+
+</html>

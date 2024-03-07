@@ -1,0 +1,33 @@
+.avisos{
+    display: flex;
+    justify-content: center;
+    
+}
+
+.titulo{
+    display: flex;
+    justify-content: center;
+    color: black;
+    font-size: 30px;
+    margin-top: 1rem;
+    border-radius: 1rem;
+    background-color: white;
+    width: 50%;
+}
+
+.subTitulo{
+    display: flex;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    margin-top: 1rem;
+    border-radius: 1rem;
+}
+
+#voosAlterados {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    max-width: 1250px;
+    margin: 30px auto 30px auto;
+}

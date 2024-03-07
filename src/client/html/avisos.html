@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <link rel="stylesheet" type="text/css" href="../css/style.css">
+    <link rel="stylesheet" type="text/css" href="../css/perfil.css">
+    <link rel="stylesheet" href="/src/client/css/avisos.css">
+    <title>Avisos</title>
+</head>
+
+<body>
+    <header id="cabecalho"></header>
+    <section>
+        <div class="titulos">
+            <div class="avisos">
+                <h3 class="titulo">AVISOS</h3>
+            </div>
+            <p class="subTitulo">Os seguintes voos tiveram alterações</p>
+        </div>
+        <div id="voosAlterados"></div>
+    </section>
+    <script src="/src/client/js/menu.js"></script>
+    <script>
+        window.onload = function getVoo() {
+            fetch('http://localhost:8000/passagemget')
+                .then(response => response.json())
+                .then(db => {
+                    let viagensId = [];
+                    let display = '';
+
+                    db.forEach(element => {
+                        viagensId.push(element.viagemId);
+                    });
+
+                    viagensId = viagensId.filter((valor, index, self) => {
+                        return self.indexOf(valor) === index;
+                    });
+
+                    const getViagemPromises = viagensId.map(element => {
+                        return getViagem(element);
+                    });
+
+                    Promise.all(getViagemPromises)
+                        .then(viagens => {
+                            viagens.forEach(voo => {
+                                if (voo.updatedAt > voo.createdAt) {
+                                    display += `
+                        <div class="card">
+                        <div class="card-body">
+                            <div class="card-last-box">
+                            <h4>ID Viagem: ${voo.id}</h4>                    
+                            </div>
+                        <div class="card-title-box">
+                            <h5 style="text-align: right;">${voo.local_embarque}</h5>
+                            <hr class="card-title-line">
+                        <h5>${voo.local_desembarque}</h5>
+                        </div>
+                        <div class="card-time-box">
+                            <h6>${voo.data_partida}</h6>
+                            <hr class="card-title-line">
+                            <h6>${voo.data_chegada}</h6>
+                        </div>
+                        <div class="card-time-box">
+                                <h6>${voo.hora_partida}</h6>
+                                <hr class="card-title-line">
+                                <h6>${voo.hora_chegada}</h6>
+                            </div>
+                        <div class="card-price-box">
+                            <p>${voo.numero_aviao}</p>
+                            <div style="display: flex;">
+                            <p>R$</p>
+                            <h2>${voo.valor}</h2> 
+                        </div>
+                        </div>
+                        <div class="card-last-box">
+                        <h4>${voo.empresa_aerea}</h4>
+                                    
+                        </div>
+                        <h4>Portão de embarque: ${voo.codigo_portao}</h4>
+
+                        </div> </div> `;
+                                }
+                            });
+
+                            document.getElementById('voosAlterados').innerHTML = display;
+                        })
+                        .catch(erro => {
+                            console.error(erro);
+                        });
+                })
+                .catch(erro => {
+                    console.error(erro);
+                });
+        };
+
+        function getViagem(element) {
+            var urlV = `http://localhost:8000/filterId?id=${element}`;
+            return fetch(urlV)
+                .then(response => response.json())
+                .then(viagem => viagem)
+                .catch(erro => {
+                    console.error(erro);
+                });
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.3.js"></script>
+    <script src="/src/client/js/masks.js"></script>
+</body>
+
+</html>

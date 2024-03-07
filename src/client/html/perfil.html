@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <link rel="stylesheet" type="text/css" href="../css/style.css">
+    <link rel="stylesheet" type="text/css" href="../css/perfil.css">
+    <title>Perfil</title>
+</head>
+
+<body>
+
+    <header id="cabecalho"></header>
+    <div>
+
+        <button class="btn__submit" onclick="logoff()">Fazer Logoff</button>
+        <a href="avisos.html"><button class="btn__submit">Avisos</button></a>
+        <div id="displayUsuario"></div>
+    </div>
+
+    <div id="displayPassageiros"></div>
+
+    <div id="displayTodasViagens"></div>
+
+    <script src="/src/client/js/menu.js"></script>
+    <script>
+        async function logoff() {
+            try {
+                sessionStorage.removeItem("usuarioLogado");
+                window.location.href = "login.html"
+            } catch (erro) {
+                console.log(erro)
+            }
+
+        }
+
+        document.addEventListener('DOMContentLoaded', async() => {
+            try {
+                let urlU = `http://localhost:8000/usuariofilt?id=${idUser}`
+                let dadoBruto = await fetch(urlU)
+                let usuarioAtual = await dadoBruto.json()
+                let displayUser = `<h3 class="usuario">Usuário Logado: ${usuarioAtual.email}</h3>`
+                document.getElementById('displayUsuario').innerHTML = displayUser
+            } catch (erro) {
+                console.log(erro)
+            }
+        })
+    </script>
+    <script>
+        window.onload = async function getPassageiros() { //pega passsageiro da tabela passageiro que tem id de usuario igual ao id do usuario logado e depois pega a informacao de suas viagens
+            const idUser = sessionStorage.getItem('usuarioLogado')
+            try {
+                const url = `http://localhost:8000/passageirofilt?idUsuario=${idUser}`
+                let dadoBruto = await fetch(url) //encontrando passageiros
+                let passageirosdoUsuario = await dadoBruto.json()
+                console.log(passageirosdoUsuario)
+
+                let display = ''
+                passageirosdoUsuario.forEach(element => {
+                    display += `
+          <div id="cardPass" >
+            <div>
+              <div class="textInfo">
+              <h2>Passageiro: ${element.nome}</h2>
+              <h3>Email: ${element.email}</h3>
+              <h3>Viagens:</h3>
+              </div>
+              <div id="viagensPass${element.id}" class="destaque">
+              </div>
+            </div>
+          </div>`
+                    getViagensPass(element) // pega viagens da tabela passageiroviagem com passageiroId igual ao id do passageiro
+                });
+                document.getElementById('displayPassageiros').innerHTML = display
+            } catch (erro) {
+                console.log(erro)
+            }
+        }
+
+        async function getViagensPass(element) { //TA CERTO NAO CORRIGE
+            var urlP = `http://localhost:8000/passagemfilt?passageiroId=${element.id}` //passando o passageiroId para encontrar o viagemId
+            let dadoBruto = await fetch(urlP)
+            let passViags = await dadoBruto.json()
+            console.log(passViags)
+            let viagem
+            let display = ''
+            let divParaInserir = document.getElementById(`viagensPass${element.id}`)
+            for (let viagen of passViags) { //percorre o array com os elementos trazidos da tabela passageiroviagem, que sao as viagens do passagiero
+                viagem = await getViagem(viagen) //pega a viagem especifica
+                    //constroi cada card de cada viagem/voo 
+                let checkin = await getCheckin(viagen)
+                let estadoCheckin = checkin == null ? "Não realizado" : "Realizado"
+                let portao = viagem.codigo_portao == null ? "Não definido" : `${viagem.codigo_portao}`
+                let bagagens = await getBagagens(viagen)
+                display = `
+          <div class="card">
+          <div class="card-body">
+            <div class="card-last-box">
+              <h4>ID da Passagem: ${viagen.id}</h4>                    
+            </div>
+          <div class="card-title-box">
+            <h5 style="text-align: right;">${viagem.local_embarque}</h5>
+            <hr class="card-title-line">
+          <h5>${viagem.local_desembarque}</h5>
+          </div>
+          <div class="card-time-box">
+            <h6>${viagem.data_partida}</h6>
+              <hr class="card-title-line">
+              <h6>${viagem.data_chegada}</h6>
+          </div>
+          <div class="card-time-box">
+                <h6>${viagem.hora_partida}</h6>
+                <hr class="card-title-line">
+                <h6>${viagem.hora_chegada}</h6>
+              </div>
+          <div class="card-price-box">
+            <p>${viagem.numero_aviao}</p>
+            <div style="display: flex;">
+            <p>R$</p>
+            <h2>${viagem.valor}</h2> 
+          </div>
+          </div>
+          <div class="card-last-box">
+          <h4>${viagem.empresa_aerea}</h4>
+          <h4>Assento: ${viagen.assento}</h4>                     
+          </div>
+          <h4>Portão de embarque: ${portao}</h4>
+          <h4>Check-in: ${estadoCheckin}</h4>
+          </div>
+          <h4>Bagagens: </h4>
+          <div id="divBagagens${viagen.id}"></div>  
+          `
+                divParaInserir.innerHTML += display //insere na divParaInserir especificada la em cima
+
+                bagagens.forEach(element => { //colocando as bagagens no card das viagens
+                    let displayB
+                    displayB = `<div class="card-title-box" id="bagagens">
+            <h5 style="text-align: right;">${element.id}</h5>
+            <hr class="card-title-line">
+          <h5>${element.status}</h5>
+          </div>`
+                    document.getElementById(`divBagagens${element.id_passagem}`).innerHTML += displayB
+                })
+            }
+        }
+
+        async function getViagem(element) { //pega so uma viagem com o id especificado
+            var urlV = `http://localhost:8000/filterId?id=${element.viagemId}`
+            let dadosB = await fetch(urlV)
+            let viagem = await dadosB.json()
+            return viagem
+        }
+
+        async function getCheckin(element) { //pega checkin de uma so viagem
+            var urlC = `http://localhost:8000/checkinfiltP?id_passagem=${element.id}`
+            let dadosB = await fetch(urlC)
+            let checkin = await dadosB.json()
+            return checkin
+        }
+
+        async function getBagagens(element) { //pega bagagens de uma viagem
+            var urlC = `http://localhost:8000/bagagemfilter?id_passagem=${element.id}`
+            let dadosB = await fetch(urlC)
+            let bagagens = await dadosB.json()
+            return bagagens
+        }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async() => {
+            try {
+
+                let dadoBruto = await fetch('http://localhost:8000/usuario')
+                let dados = await dadoBruto.json()
+                const user = dados.find(element => element.id == idUser);
+                console.log(user)
+                if (user.userType) {
+                    getViagens()
+                }
+            } catch (erro) {
+                console.log(erro)
+            }
+        })
+
+        async function getViagens() {
+            try {
+                let dadoBruto = await fetch('http://localhost:8000/')
+                let dados = await dadoBruto.json()
+                let display = ''
+                dados.forEach(element => {
+                    display += `
+          <div class="card">
+            <div class="card-body">
+              <div class="card-title-box">
+                <h5 style="text-align: right;">${element.local_embarque}</h5>
+                <hr class="card-title-line">
+                <h5>${element.local_desembarque}</h5>
+              </div>
+              <div class="card-time-box">
+                <h6>${element.data_partida}</h6>
+                <hr class="card-title-line">
+                <h6>${element.data_chegada}</h6>
+              </div>
+              <div class="card-time-box">
+                <h6>${element.hora_partida}</h6>
+                <hr class="card-title-line">
+                <h6>${element.hora_chegada}</h6>
+              </div>
+              <div class="card-price-box">
+                <p>${element.numero_aviao}</p>
+                <div style="display: flex;">
+                  <p>R$</p>
+                  <h2>${element.valor}</h2> 
+                </div>
+              </div>
+              <div>
+                <p>Portão: ${element.codigo_portao}</p>
+              </div>
+              <div>
+                <p>ID viagem: ${element.id}</p>
+              </div>
+              <div class="card-last-box"> 
+                <h4>${element.empresa_aerea}</h4>
+                <a class="btn" href="attviagem.html?id=${element.id}">Editar →</a>
+              </div>
+            </div>
+          </div>`
+
+                });
+                document.getElementById('displayTodasViagens').innerHTML = display
+            } catch (erro) {
+                console.log(erro)
+            }
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.3.js"></script>
+    <script src="/src/client/js/masks.js"></script>
+</body>
+
+</html>
